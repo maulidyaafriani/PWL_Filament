@@ -7,6 +7,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 
 class ProductInfolist
 {
@@ -14,8 +16,10 @@ class ProductInfolist
     {
         return $schema
             ->components([
-                Section::make('Product Info')
-                ->description('')
+                Tabs::make('Product Tabs')
+                    ->tabs([
+                        Tab::make('Product Details')
+                            ->icon('heroicon-m-information-circle')
                     ->schema([
                         TextEntry::make('name')
                             ->label('Product Name')
@@ -33,9 +37,9 @@ class ProductInfolist
                             ->label('Product Creation Date')
                             ->date('d M Y')
                             ->color('info'),
-                    ])
-                    ->columnSpanFull(),
-                Section::make('Pricing & Stock')
+                    ]),
+                     Tab::make('Pricing & Stock')
+                        ->icon('heroicon-m-currency-dollar')
                     ->schema([
                         TextEntry::make('price')
                             ->label('Product Price')
@@ -43,10 +47,16 @@ class ProductInfolist
                             ->formatStateUsing(fn (string $state): string => 'Rp ' . number_format($state, 0, ',', '.')),
                         TextEntry::make('stock')
                             ->label('Product Stock')
-                            ->icon('heroicon-o-circle-stack'),
-                    ])
-                    ->columnSpanFull(),
-                Section::make('Media & Status')
+                            ->icon('heroicon-o-circle-stack')
+                            ->badge()
+                            ->color(fn (int $state): string => match (true) {
+                                $state < 10 => 'danger',
+                                $state < 20 => 'warning',
+                                default => 'success',
+                            }),
+                    ]),
+                    Tab::make('Media & Status')
+                        ->icon('heroicon-m-photo')
                     ->schema([
                         ImageEntry::make('image')
                             ->label('Product Image')
@@ -66,10 +76,17 @@ class ProductInfolist
                         TextEntry::make('stock')
                             ->label('Product Stock')
                             ->weight('bold')
-                            ->color('primary')
-                            ->icon('heroicon-o-circle-stack'),
+                            ->icon('heroicon-o-circle-stack')
+                            ->badge()
+                            ->color(fn (int $state): string => match (true) {
+                                $state < 10 => 'danger',
+                                $state < 20 => 'warning',
+                                default => 'success',
+                            }),
                     ])
-                    ->columnSpanFull(),
+                    ])
+                    ->columnSpanFull()
+                    ->vertical(),
             ]);
     }
 }
