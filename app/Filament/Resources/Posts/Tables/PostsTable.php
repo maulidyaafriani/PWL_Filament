@@ -12,6 +12,7 @@ use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Columns\IconColumn;
 
 class PostsTable
 {
@@ -19,22 +20,35 @@ class PostsTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('title')
-                ->sortable()
-                ->searchable(),
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('slug')
-                ->sortable()
-                ->searchable(),
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('category.name')
-                ->sortable()
-                ->searchable(),
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 ColorColumn::make('color'),
                 ImageColumn::make('image')
-                ->disk('public'),
+                    ->disk('public'),
                 TextColumn::make('created_at')
-                ->label('Created At')
-                ->dateTime()
-                ->sortable(),
+                    ->label('Created At')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('tags')
+                    ->label('Tags')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('published')
+                    ->boolean()
+                    ->label('Published'),
             ])->defaultSort('created_at', 'asc')
             ->filters([
                 Filter::make('created_at')
