@@ -13,6 +13,10 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
 
 class PostsTable
 {
@@ -70,7 +74,19 @@ class PostsTable
                 ->preload(),
             ])
             ->recordActions([
+                Action::make('status')
+                    ->label('Status Change')
+                    ->icon('heroicon-o-check-circle')
+                    ->schema([
+                        Checkbox::make('published')
+                            ->default(fn($record):bool=>$record->published),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update(['published' => $data['published']]);
+                    }),
                 EditAction::make(),
+                DeleteAction::make(),
+                ReplicateAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
